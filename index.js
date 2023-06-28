@@ -13,7 +13,7 @@ register("worldLoad", () => {
 });
 
 register("chat", (message, event) => {
-    if(message in fileModel.fileToArray(dataFile)){
+    if(message in fileModel.fileToArray()){
         display.addLine(
             new DisplayLine("PING").setTextColor(Renderer.RED)
           );
@@ -29,28 +29,27 @@ register("chat", (message, event) => {
     }
 });
 
-register("command", (user) => { // goal is to return a message, format shown below
-    let args[] = [] // placeholder
+register("command", (...args) => { // goal is to return a message, format shown below
     
     if(args[0].toLowerCase() == "add"){
         if(args[1]){
-            args.pop(0);
+            args.pop(); 
             // convert args into a string called "words"
-            words = null;
-            fileModel.addText(words, dataFile); // create function that puts it into the function and reloads it here
+            let words = args.join(' ')+"^&$"; // ^&$ is just a marker so that fileModel functions know where to split the array
+            fileModel.addText(words); // create function that puts it into the function and reloads it here
             ChatLib.chat("[CP]: Successfully added trigger. Do /cp display to show all active triggers.");
         }
     }
     else if(args[0].toLowerCase() == "remove"){
         if(args[1] && !args[2]){
-            fileModel.remove(args[1], dataFile);
+            fileModel.remove(args[1]);
             ChatLib.chat("[CP]: Successfully removed trigger. Do /cp display to show all active triggers.");
         }
     }
     else if(args[0].toLowerCase() == "wipe"){
         ChatLib.chat("[CP]: Are you sure you want to do this? Press Y/N");
         if(Ykey.isPressed()){
-            fileModel.wipeFile(dataFile);
+            fileModel.wipeFile();
             ChatLib.chat("[CP]: Wipe successful.");
         }
         if(Nkey.isPressed()){
@@ -58,7 +57,12 @@ register("command", (user) => { // goal is to return a message, format shown bel
         }
     }
     else if(args[0].toLowerCase() == "display"){
-        fileModel.display(dataFile);
+        let triggers = fileModel.fileToArray();
+
+        for(var i = 0; i<=triggers.length-1; i++){
+            Chatlib.chat(i+": "+triggers[i]);
+        }
+
     }
     else{
         ChatLib.chat("---- ChatPing ----");
