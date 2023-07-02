@@ -1,11 +1,12 @@
-const fileModel = require("../models/fileModel");
+/// <reference types="../CTAutocomplete" />
+/// <reference lib="es2015" />
+const fileModel = require("models/fileModel");
 
 const display = new Display();
 const Ykey = Client.getKeyBindFromKey(Keyboard.KEY_Y, "Y");
 const Nkey = Client.getKeyBindFromKey(Keyboard.KEY_N, "N");
 const Xkey = Client.getKeyBindFromKey(Keyboard.KEY_X, "X");
 let dataFile = fileModel.checkforFile();
-
 display.setAlign("center");
 
 register("worldLoad", () => {
@@ -20,11 +21,12 @@ register("chat", (message, event) => {
           display.addLine(
             new DisplayLine("press the X key to remove this text.").setTextColor(Renderer.ORANGE)
           );
-        
+            World.playSound("mob.cat.purreow", 10, 5)
           if(Xkey.isPressed()){
             display.setline(0, "");
             display.setline(1, "");
           }
+          
         // play a sound or sth
     }
 });

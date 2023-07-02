@@ -1,7 +1,0 @@
-{
-    "name":"ChatPing",
-    "creator":"FuzzyPcklz",
-    "description":"Pings you whenever a specific chat message is sent!",
-    "version":"1.0.0",
-    "entry":"index.js"
-}
