@@ -1,6 +1,4 @@
 // This is where all the file IO stuff will happen.
-
-
 function checkForFile(){
     // see if the file exists or not
     if(FileLib.exists('./config/triggerList.cfg')){
@@ -41,13 +39,4 @@ function fileToArray(){
     let triggersArray = FileLib.read('./config/triggerList.cfg').toString().split("^&$");
 
     return triggersArray;
-}
-
-
-module.exports = {
-    checkForFile,
-    addText,
-    remove,
-    wipe,   
-    fileToArray
 }
