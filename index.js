@@ -28,11 +28,17 @@ function addText(text){
 function remove(index){
     // convert the file to an array, then remove index "index" from it
     let triggersArray = FileLib.read('./config/triggerList.cfg').toString().split("^&$");
-
-    triggersArray.splice(index, 1)
-    let weirdCSV = triggersArray.join("^&$");
-    FileLib.delete('./config/triggerList.cfg');
-    FileLib.write('./config/triggerList.cfg', weirdCSV);
+    if(index>triggersArray.length-1){
+        return false;
+    }
+    else{
+        triggersArray.splice(index, 1)
+        let weirdCSV = triggersArray.join("^&$");
+        FileLib.delete('./config/triggerList.cfg');
+        FileLib.write('./config/triggerList.cfg', weirdCSV);
+        return true;
+    }
+    
 
 }
 
@@ -45,7 +51,7 @@ function wipe(){
 function fileToArray(){
     //converts it to an array, then returns it. simple.
     let triggersArray = FileLib.read('./config/triggerList.cfg').toString().split("^&$");
-
+    triggersArray.pop();
     return triggersArray;
 }
 
@@ -56,62 +62,77 @@ register("worldLoad", () => {
     ChatLib.chat("[CP]: ChatPing is ENABLED! do /cp or /chatping for more info.");
 });
 
-register("chat", (message, event) => {
-    if(message in fileToArray()){
-        display.addLine(
-            new DisplayLine("PING").setTextColor(Renderer.RED)
-          );
-          display.addLine(
-            new DisplayLine("press the X key to remove this text.").setTextColor(Renderer.ORANGE)
-          );
-            World.playSound("mob.cat.purreow", 10, 5)
-          if(Xkey.isPressed()){
-            display.setline(0, "");
-            display.setline(1, "");
-          }
-          
+register("chat", (event) => {
+    console.log("do you hear the flibberty jibber jabber oh my god I gotta get out or I'm gonna have another work to sell another story to tell another time piece ringing the bell do you hear the clock stop when you reach the end no you don't so it must be neverending comprehend if you can but if you try to prentend you understand you resemble a fool and you're only a man so give it up and smile")
+    let msg = ChatLib.getChatMessage(event);
+    if(fileToArray().includes(msg.toString())){
+        
+        ChatLib.chat("[CP]: \""+msg+"\" has triggered a ping!");
+        World.playSound("mob.ghast.affectionate_scream", 100, 0.3);  
         // play a sound or sth
     }
 });
 
 register("command", (...args) => { // goal is to return a message, format shown below
-    
-    if(args[0].toLowerCase() == "add"){
-        if(args[1]){
-            args.pop(); 
-            // convert args into a string called "words"
-            let words = args.join(' ')+"^&$"; // ^&$ is just a marker so that fileModel functions know where to split the array
-            addText(words); // create function that puts it into the function and reloads it here
-            ChatLib.chat("[CP]: Successfully added trigger. Do /cp display to show all active triggers.");
-        }
-    }
-    else if(args[0].toLowerCase() == "remove"){
-        if(args[1] && !args[2]){
-            remove(args[1]);
-            ChatLib.chat("[CP]: Successfully removed trigger. Do /cp display to show all active triggers.");
-        }
-    }
-    else if(args[0].toLowerCase() == "wipe"){
-        ChatLib.chat("[CP]: Are you sure you want to do this? Press Y/N");
-        if(Ykey.isPressed()){
-            wipeFile();
-            ChatLib.chat("[CP]: Wipe successful.");
-        }
-        if(Nkey.isPressed()){
-            ChatLib.chat("[CP]: Aborted wipe.");
-        }
-    }
-    else if(args[0].toLowerCase() == "display"){
-        let triggers = fileToArray();
-
-        for(var i = 0; i<=triggers.length-1; i++){
-            Chatlib.chat(i+": "+triggers[i]);
-        }
-
-    }
-    else{
+    if(!args[0]){
+        //explain that they're missing args
+        World.playSound("mob.cat.purreow", 100, 1);
+        
         ChatLib.chat("---- ChatPing ----");
         ChatLib.chat("bla bla bla yeah we get it");
+    }
+    else{
+        switch(args[0].toLowerCase()){
+            default:
+                ChatLib.chat("---- ChatPing ----");
+                ChatLib.chat("bla bla bla yeah we get it");
+            case "add":
+                if(args[1]){
+                    args.shift();
+                    // convert args into a string called "words"
+                    let words = args.join(' '); // ^&$ is just a marker so that fileModel functions know where to split the array
+                    addText(words); // create function that puts it into the function and reloads it here
+                    ChatLib.chat("[CP]: Successfully added trigger. Do /cp display to show all active triggers.");
+                    World.playSound("mob.cat.meow", 100, 1);
+                    break;
+                }
+                else{
+                    //explain that they're missing args
+                    ChatLib.chat("[CP]: Addition failed. Missing arguments!");
+                    break;
+                }
+            case "remove":
+                if(args[1]){
+                    if(remove(args[1]) === true){
+                        ChatLib.chat("[CP]: Successfully removed trigger. Do /cp display to show all active triggers.");
+                    }
+                    else{
+                        ChatLib.chat("[CP]: Removal failed. Bad index number. Try a number listed in /cp display!");
+                    }
+                    break;
+                }
+                else{
+                    //explain that they're missing args
+                    ChatLib.chat("[CP]: Removal failed. Missing index number. Try a number listed in /cp display!");
+                    break;
+                }
+            case "wipe":
+                ChatLib.chat("[CP]: Are you sure you want to do this? Press Y/N");
+                if(Ykey.isPressed()){
+                    wipeFile();
+                ChatLib.chat("[CP]: Wipe successful.");
+                }
+                if(Nkey.isPressed()){
+                    ChatLib.chat("[CP]: Aborted wipe.");
+                }
+            case "display":
+                let triggers = fileToArray();
+                ChatLib.chat("[CP] Currently active keywords:")
+                
+                for(var i = 0; i<=triggers.length-1; i++){
+                    ChatLib.chat(i+": "+triggers[i]);
+                }
+        }
     }
   }).setName("chatping").setAliases("cp");
 
