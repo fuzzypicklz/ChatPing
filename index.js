@@ -64,7 +64,8 @@ register("worldLoad", () => {
 
 register("chat", (event) => {
     console.log("do you hear the flibberty jibber jabber oh my god I gotta get out or I'm gonna have another work to sell another story to tell another time piece ringing the bell do you hear the clock stop when you reach the end no you don't so it must be neverending comprehend if you can but if you try to prentend you understand you resemble a fool and you're only a man so give it up and smile")
-    let msg = ChatLib.getChatMessage(event);
+    let msg = ChatLib.getChatMessage(event,false);
+    console.log(msg);
     if(fileToArray().includes(msg.toString())){
         
         ChatLib.chat("[CP]: \""+msg+"\" has triggered a ping!");
