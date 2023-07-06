@@ -79,23 +79,6 @@ register("chat", (event) => {
         }
         else console.log("skull")
     }
-    
-    
-    
-
-
-
-
-    /*
-    if(fileToArray().includes(msg.split(" "))){
-        console.log("HAHAHA IT TRIGGELED")
-        ChatLib.chat("[CP]: \""+msg+"\" has triggered a ping!");
-        //World.playSound("mob.ghast.affectionate_scream", 100, 0.1);
-        World.playSound("mob.guardian.death", 100, 1);
-        World.playSound("random.explode", 100, .5);
-        // play a sound or sth
-    }
-    */
 });
 
 register("command", (...args) => { // goal is to return a message, format shown below
