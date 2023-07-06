@@ -51,7 +51,6 @@ function wipe(){
 function fileToArray(){
     //converts it to an array, then returns it. simple.
     let triggersArray = FileLib.read('./config/triggerList.cfg').toString().split("^&$");
-    triggersArray.pop();
     return triggersArray;
 }
 
@@ -60,18 +59,43 @@ display.setAlign("center");
 
 register("worldLoad", () => {
     ChatLib.chat("[CP]: ChatPing is ENABLED! do /cp or /chatping for more info.");
+    ChatLib.chat("[CP]: ");
 });
 
 register("chat", (event) => {
-    console.log("do you hear the flibberty jibber jabber oh my god I gotta get out or I'm gonna have another work to sell another story to tell another time piece ringing the bell do you hear the clock stop when you reach the end no you don't so it must be neverending comprehend if you can but if you try to prentend you understand you resemble a fool and you're only a man so give it up and smile")
-    let msg = ChatLib.getChatMessage(event,false);
+    //console.log("do you hear the flibberty jibber jabber oh my god I gotta get out or I'm gonna have another work to sell another story to tell another time piece ringing the bell do you hear the clock stop when you reach the end no you don't so it must be neverending comprehend if you can but if you try to prentend you understand you resemble a fool and you're only a man so give it up and smile")
+    let msg = ChatLib.getChatMessage(event,false).toString();
     console.log(msg);
-    if(fileToArray().includes(msg.toString())){
-        
+    let wordCounter = 0;
+    const triggers = fileToArray();
+    console.log(triggers)
+    for(var i = 0; i<triggers.length; i++){
+        console.log(triggers[i]+"!! trig");
+        if(msg.includes(triggers[i])&&triggers[i]!=""){
+            ChatLib.chat("[CP]: \""+msg+"\" has triggered a ping!");
+            //World.playSound("mob.ghast.affectionate_scream", 100, 0.1);
+            World.playSound("mob.guardian.death", 100, 1);
+            World.playSound("random.explode", 100, .5);
+        }
+        else console.log("skull")
+    }
+    
+    
+    
+
+
+
+
+    /*
+    if(fileToArray().includes(msg.split(" "))){
+        console.log("HAHAHA IT TRIGGELED")
         ChatLib.chat("[CP]: \""+msg+"\" has triggered a ping!");
-        World.playSound("mob.ghast.affectionate_scream", 100, 0.3);  
+        //World.playSound("mob.ghast.affectionate_scream", 100, 0.1);
+        World.playSound("mob.guardian.death", 100, 1);
+        World.playSound("random.explode", 100, .5);
         // play a sound or sth
     }
+    */
 });
 
 register("command", (...args) => { // goal is to return a message, format shown below
@@ -130,7 +154,7 @@ register("command", (...args) => { // goal is to return a message, format shown 
                 let triggers = fileToArray();
                 ChatLib.chat("[CP] Currently active keywords:")
                 
-                for(var i = 0; i<=triggers.length-1; i++){
+                for(var i = 0; i<triggers.length-1; i++){
                     ChatLib.chat(i+": "+triggers[i]);
                 }
         }
